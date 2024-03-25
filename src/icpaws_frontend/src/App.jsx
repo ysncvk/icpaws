@@ -3,6 +3,7 @@ import { icpaws_backend } from 'declarations/icpaws_backend';
 import Header from './header';
 import CreatePetForm from './createPet';
 import { useEffect } from 'react';
+import PetList from './components/pet-list';
 
 function App() {
   const [pets, setPets] = useState([]);
@@ -22,6 +23,7 @@ function App() {
     <main>
       <Header/>
       <CreatePetForm />
+      <PetList pets={pets} />
 
     </main>
   );

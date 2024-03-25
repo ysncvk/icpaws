@@ -1,8 +1,7 @@
 import Option "mo:base/Option";
 import Trie "mo:base/Trie";
 import Nat32 "mo:base/Nat32";
-
-
+import Blob "mo:base/Blob";
 
 actor ICPaws {
 
