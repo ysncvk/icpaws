@@ -1,29 +1,28 @@
 import { useState } from 'react';
 import { icpaws_backend } from 'declarations/icpaws_backend';
+import Header from './header';
+import CreatePetForm from './createPet';
+import { useEffect } from 'react';
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [pets, setPets] = useState([]);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    icpaws_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
+  // Get Current Proposal Count Function
+  useEffect(() => {
+    async function fetchData() {
+    const pets  = await icpaws_backend.list();
+    setPets(pets);
+    console.log(pets)
+    }
+    fetchData();
+}, []);
+
 
   return (
     <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
+      <Header/>
+      <CreatePetForm />
+
     </main>
   );
 }
