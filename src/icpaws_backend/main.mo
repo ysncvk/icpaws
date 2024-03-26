@@ -10,7 +10,6 @@ actor ICPaws {
     return "Hello, " # Principal.toText(message.caller) # "!";
   };
 
-
   /**
    * Types
    */

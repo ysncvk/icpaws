@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { createActor, icpaws_backend } from 'declarations/icpaws_backend';
-import Header from './header';
 import CreatePetForm from './createPet';
 import PetList from './components/pet-list';
 import Box from '@mui/material/Box';
@@ -55,15 +54,18 @@ function App() {
 
   return (
     <main>
-      <Box  gap={5}
+      <Box  
+      gap={5}
         display="grid"
         gridTemplateColumns={{
           xs: 'repeat(1, 1fr)',
           sm: 'repeat(2, 1fr)',
           md: 'repeat(2, 1fr)',
-        }}sx={{ pb: 3, borderRadius: '10px' }}>
+        }}
+        sx={{ pb: 3, borderRadius: '10px' }}
+      >
 
-          <img src="public/logo.png" alt="Your logo" width="1000" style={{ borderRadius: '30px', paddingLeft:'80px' }} />
+          <img src="src/icpaws_frontend/public/logo.png" alt="Your logo" width="1000" style={{ borderRadius: '30px', paddingLeft:'80px' }} />
       
           <div>
 
