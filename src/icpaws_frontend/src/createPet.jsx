@@ -9,7 +9,7 @@ import FormProvider, { RHFTextField } from './components/hook-form';
 
 import {icpaws_backend} from "../../declarations/icpaws_backend";
 
-export default function CreatePetForm() {
+export default function CreatePetForm({ onPetCreated }) {
   const [imageData, setImageData] = useState(''); // Dosya verisinin base64 formatındaki değerini saklamak için state kullanıyoruz
 
   const NewUserSchema = Yup.object().shape({
@@ -48,6 +48,7 @@ export default function CreatePetForm() {
       const id= icpaws_backend.create(formData)
       console.info('DATA', formData);
       console.log("id:",id)
+      onPetCreated();
     } catch (error) {
       console.error(error);
     }

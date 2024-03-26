@@ -1,9 +1,15 @@
 import Option "mo:base/Option";
 import Trie "mo:base/Trie";
 import Nat32 "mo:base/Nat32";
-import Blob "mo:base/Blob";
+import Principal "mo:base/Principal";
 
 actor ICPaws {
+
+ 
+  public query (message) func greet() : async Text {
+    return "Hello, " # Principal.toText(message.caller) # "!";
+  };
+
 
   /**
    * Types

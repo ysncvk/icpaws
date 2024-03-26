@@ -1,5 +1,7 @@
 
+import { Typography } from '@mui/material';
 import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
 
 import ListItemText from '@mui/material/ListItemText';
 
@@ -30,36 +32,28 @@ export default function PetItem({ pet }) {
    
       <Card>
       <img src={image} alt="Selected image" style={{ maxWidth: '100%', maxHeight: '200px' }} />
-      <ListItemText
-      primary="Name of the pet"
-      secondary={name}
-      primaryTypographyProps={{
-        typography: 'caption',
-        color: 'text.disabled',
-      }}
-      secondaryTypographyProps={{
-        mt: 1,
-        noWrap: true,
-        component: 'span',
-        color: 'text.primary',
-        typography: 'subtitle1',
-      }}
-    />
-     <ListItemText
-      primary="Species of Pet"
-      secondary={species}
-      primaryTypographyProps={{
-        typography: 'caption',
-        color: 'text.disabled',
-      }}
-      secondaryTypographyProps={{
-        mt: 1,
-        noWrap: true,
-        component: 'span',
-        color: 'text.primary',
-        typography: 'subtitle1',
-      }}
-    />
+
+      <Stack padding="15px">
+       <Stack direction="row" gap={3} alignItems="center">
+         <Typography variant='subtitle1' color='text.disabled'> Name of the pet:  </Typography>
+         <Typography variant='subtitle1'> {name}  </Typography>
+       </Stack>
+       <Stack direction="row" gap={3} alignItems="center">
+         <Typography variant='subtitle1' color='text.disabled'> Species of the pet:  </Typography>
+         <Typography variant='subtitle1'> {species}  </Typography>
+       </Stack>
+       <Stack direction="row" gap={3} alignItems="center">
+         <Typography variant='subtitle1' color='text.disabled'> Breed of the pet:  </Typography>
+         <Typography variant='subtitle1'> {breed}  </Typography>
+       </Stack>
+       <Stack direction="row" gap={3} alignItems="center">
+         <Typography variant='subtitle1' color='text.disabled'> Age of the pet:  </Typography>
+         <Typography variant='subtitle1'> {age}  </Typography>
+       </Stack>
+
+      </Stack>
+     
+    
       </Card>     
   );
 }
