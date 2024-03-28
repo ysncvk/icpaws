@@ -3,12 +3,35 @@ import Trie "mo:base/Trie";
 import Nat32 "mo:base/Nat32";
 import Principal "mo:base/Principal";
 
+
 actor ICPaws {
 
  
   public query (message) func greet() : async Text {
-    return "Hello, " # Principal.toText(message.caller) # "!";
+    return "Hoşgeldin, " # Principal.toText(message.caller) # "!";
   };
+  
+  public type UserId = Nat32;
+
+  public type User = {
+  principal: Principal;
+  username: Text;
+  avatar: Text;
+};
+private stable var nextUser : UserId = 0;
+private var users: Trie.Trie<UserId, User> = Trie.empty();
+
+
+
+public func createUser(caller: Principal) : async User {
+  let userId = nextUser;
+  nextUser += 1;
+  let user = { principal = caller; username = "";avatar=""};
+  users := Trie.replace(users, userKey(userId),Nat32.equal,?user).0;
+  return user;
+};
+
+
 
   /**
    * Types
@@ -112,4 +135,10 @@ public query func list() : async [Pet] {
   private func key(x : PetId) : Trie.Key<PetId> {
     return { hash = x; key = x };
   };
+
+  private func userKey(x : UserId) : Trie.Key<UserId> {
+    return { hash = x; key = x };
+  };
+
+  
 };

@@ -24,8 +24,6 @@ export default function PetItem({ pet }) {
   } = pet
   
 
-  console.log('name: ', name)
-  console.log('image: ', name)
 
 
   return (
