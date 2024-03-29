@@ -14,7 +14,10 @@ actor ICPaws {
   public query (message) func greet() : async Text {
     return "Hoşgeldin, " # Principal.toText(message.caller) # "!";
   };
-  
+  /**
+   * Types for User
+   */
+
   public type Result<T, E> = Result.Result<T, E>;
 
   public type UserId= Principal;
@@ -26,35 +29,86 @@ actor ICPaws {
   };
 
   /**
-   * Application State
+   * Application State for User
    */
 
   private stable var users : Trie.Trie<UserId, User> = Trie.empty();
 
   /**
-   * High-Level API
+   * High-Level API for User
    */
 
-  // Kullanıcıyı Internet Identity ile kaydet
-  public func signUpWithInternetIdentity(caller: Principal) : async UserId {
+  // Register  a User
+  public  func  signUpWithInternetIdentity(caller:Principal) : async Bool {
 
     let result=Trie.find(users, userKey(caller), Principal.equal);
     let exists = Option.isSome(result);
     
     
-    // Kullanıcıyı daha önce kaydetmişsek hata döndür
+    // Control whether the user exists
     if (exists) {
-      return caller; // Kullanıcı zaten kayıtlı
+      return false; // User is already registered
     };
     
-    // Yeni kullanıcıyı oluştur
+    // Create new User
     let newUser = { name = ""; avatar = "" };
     users := Trie.replace(users, userKey(caller), Principal.equal, ?newUser).0;
     
-    return caller; // Yeni kullanıcı başarıyla kaydedildi
+    return true; // New user created!
   };
+
+  // Update a User 
+  public func updateUser (caller: Principal, user: User): async Bool {
+    let result = Trie.find(users, userKey(caller),Principal.equal);
+    let exists = Option.isSome(result);
+    if(exists) {
+      users := Trie.replace(
+        users,
+        userKey(caller),
+        Principal.equal,
+        ?user,
+      ).0;
+    };
+    return exists;
+  };
+ 
+  // Delete a User
+  public func deleteUser(caller:Principal) : async Bool {
+     let result = Trie.find(users, userKey(caller),Principal.equal);
+    let exists = Option.isSome(result);
+    if(exists) {
+      users := Trie.replace(
+        users,
+        userKey(caller),
+        Principal.equal,
+        null,
+      ).0;
+    };
+    return exists;
+
+  };
+
+  // Get the current user based on the caller's principal
+  public query ({caller}) func getCurrentUser() : async ?User {
+    let result = Trie.find(users, userKey(caller), Principal.equal);
+    return result;
+  };
+  
+  // Get All Users
+
+  public query func listUsers() : async [(UserId, User)] {
+  return Trie.toArray<UserId, User, (UserId, User)>(
+    users,
+    func (k, v) : (UserId, User) {
+      (k, {userId = k; name = v.name; avatar = v.avatar})
+    }
+  );
+};
+
+
+
   /**
-   * Types
+   * Types for Pet
    */
 
   // The type of a pet identifier.
@@ -74,12 +128,8 @@ actor ICPaws {
     ownerId: UserId;
   };
   
-  type List <Pet> = ?(Pet,List<Pet>);
-
-    
-
   /**
-   * Application State for Prt
+   * Application State for Pet
    */
 
   // The next available Pet identifier.
@@ -97,10 +147,10 @@ actor ICPaws {
   };
 
   // Create a pet.
-  public func createPet(pet: Pet, caller: Principal) : async Result<PetId, Text> {
+public  func createPet(pet: Pet, caller:Principal) : async Bool {
     // Kullanıcı giriş yapmamışsa hata döndür
-    if (isUserLoggedIn(caller)) {
-        return Err("Lütfen önce giriş yapın.");
+    if (not isUserLoggedIn(caller)) {
+        return (false);
     };
     
     // Pet için bir kimlik oluştur
@@ -108,12 +158,14 @@ actor ICPaws {
     next += 1;
     
     // Peti kullanıcının kimliğiyle ilişkilendir
-    let petWithOwner = { pet with ownerId = caller };
-    pets := Trie.replace(pets, key(petId), Nat32.equal, ?petWithOwner).0;
+  
+    pets := Trie.replace(pets, key(petId), Nat32.equal, ?pet).0;
     
     // Oluşturulan petin kimliğini başarıyla döndür
-    return Ok(petId);
+    return true;
 };
+
+
   public func getUserPets(caller: Principal) : async [Pet] {
   let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(
   pets,
@@ -165,26 +217,26 @@ actor ICPaws {
   };
 
 
-    // List all pets with pagination.
-public query func list() : async [Pet] {
-  return Trie.toArray<PetId, Pet, Pet>(
+    // List all pets 
+public query func list() : async [(PetId, Pet)] {
+  return Trie.toArray<PetId, Pet, (PetId, Pet)>(
     pets,
-    func (k, v) : Pet {
-      {petId = k; name= v.name; species = v.species; breed = v.breed; age = v.age; gender = v.gender; adoption = v.adoption; place = v.place; description = v.description; image = v.image; ownerId= v.ownerId}
+    func (k, v) : (PetId, Pet) {
+      (k, {petId = k; name= v.name; species = v.species; breed = v.breed; age = v.age; gender = v.gender; adoption = v.adoption; place = v.place; description = v.description; image = v.image; ownerId= v.ownerId})
     }
   );
 };
-
 
   /**
    * Utilities
    */
 
-  // Create a trie key from a superhero identifier.
+  // Create a trie key from a superhero identifier. (Parameter is a Nat32 tyoe)
   private func key(x : PetId) : Trie.Key<PetId> {
     return { hash = x; key = x };
   };
-
+  
+   // Create a trie key from a useridentifier. (Parameter is a Principal Type)
   private func userKey(x : UserId) : Trie.Key<UserId> {
     return { hash = Principal.hash x; key = x };
   };
