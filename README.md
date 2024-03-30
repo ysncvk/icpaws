@@ -1,6 +1,12 @@
-# icpaws
+# ICPPaws: A Fullstack Pet Adoption Application on ICP
 
-Welcome to your new icpaws project and to the internet computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+
+## Description
+
+ICPPaws is a fullstack pet adoption application developed on the Internet Computer Protocol (ICP). It was created as the final project for the ICP Internship Bootcamp in collaboration with Rise In. The backend is implemented using Motoko, while React is utilized for the frontend. Material-UI (Mui) is employed for frontend design. Users can log in to the system using Internet Identity and manage their profiles. They can also create listings for pets available for adoption, view their previous listings, and perform editing or deletion operations on their listings.
+
+
+## Instalaltion
 
 To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
 
@@ -10,6 +16,8 @@ To learn more before you start working with icpaws, see the following documentat
 - [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
 - [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
 - [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+
+## Quick Start
 
 If you want to start working on your project right away, you might want to try the following commands:
 
@@ -25,7 +33,7 @@ If you want to test your project locally, you can use the following commands:
 
 ```bash
 # Starts the replica, running in the background
-dfx start --background
+dfx start --clean 
 
 # Deploys your canisters to the replica and generates your candid interface
 dfx deploy

@@ -16,7 +16,7 @@ import { useSnackbar } from "notistack";
 
 // ----------------------------------------------------------------------
 
-export default function AddPetForm({ open, onClose, principal, mutateList }) {
+export default function AddPetForm({ open, onClose, principal, mutatePets }) {
   const [imageData, setImageData] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
@@ -69,8 +69,7 @@ export default function AddPetForm({ open, onClose, principal, mutateList }) {
     try {
       const formData = { ...data, image: imageData, owner: principal };
       await icpaws_backend.createPet(formData);
-      mutateList();
-      enqueueSnackbar("Create success!");
+      mutatePets();
       onClose();
       console.info("DATA", data);
     } catch (error) {

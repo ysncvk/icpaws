@@ -16,15 +16,9 @@ export default function MyPetItem({ pet }) {
 
   const confirm = useBoolean();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const onDeleteRow = async () => {
     const response = await icpaws_backend.delete(id);
-    if (response.status === 200) {
-      enqueueSnackbar("Delete Process Succesfull");
-    } else {
-      enqueueSnackbar("Please try again later!", { variant: "error" });
-    }
+    console.log(response);
   };
 
   return (
@@ -36,7 +30,7 @@ export default function MyPetItem({ pet }) {
           style={{ maxWidth: "100%", maxHeight: "200px" }}
         />
 
-        <Stack padding="15px">
+        <Stack>
           <Stack direction="row" gap={3} alignItems="center">
             <Typography variant="subtitle1" color="text.disabled">
               {" "}
@@ -65,32 +59,15 @@ export default function MyPetItem({ pet }) {
             </Typography>
             <Typography variant="subtitle1"> {gender} </Typography>
           </Stack>
-          <Stack direction="row" gap={3} justifyContent="space-between">
-            <Button variant="outlined" onClick={quickEdit.onTrue}>
-              Edit
-            </Button>
-            <Button variant="outlined" color="red" onClick={confirm.onTrue}>
-              Delete
-            </Button>
-          </Stack>
+        </Stack>
+        <Stack direction="row" gap={3} p={5}>
+          {" "}
+          <Button variant="outlined" onClick={onDeleteRow}>
+            delete
+          </Button>{" "}
+          <Button variant="outlined">edit</Button>
         </Stack>
       </Card>
-      <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title="Deleting Your Pet"
-        content={
-          <Typography>
-            Do you really want to delete &nbsp;
-            <strong>{name}</strong>
-          </Typography>
-        }
-        action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
-            Delete
-          </Button>
-        }
-      />
     </>
   );
 }

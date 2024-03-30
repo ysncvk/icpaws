@@ -16,11 +16,11 @@ export default function ListMyPets({ open, onClose, principal }) {
 
   useEffect(() => {
     fetchPets();
-  }, []); // Fetch pets on component mount
+  }, [open]); // Fetch pets on component mount
 
   const fetchPets = async () => {
     try {
-      const mypets = await icpaws_backend.list();
+      const mypets = await icpaws_backend.getUserPets(principal);
       setMyPets(mypets);
     } catch (error) {
       console.error("Error fetching pets:", error);

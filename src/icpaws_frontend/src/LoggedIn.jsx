@@ -89,7 +89,7 @@ function LoggedIn({ updateList }) {
               justifyContent="center"
               gap={2}
             >
-              <Button variant="outlined" onClick={logout}>
+              <Button variant="outlined" onClick={listPet.onTrue}>
                 My Pets
               </Button>
               <Button variant="outlined" onClick={addPet.onTrue}>
@@ -123,6 +123,7 @@ function LoggedIn({ updateList }) {
         open={addPet.value}
         onClose={addPet.onFalse}
         principal={principal}
+        mutatePets={updateList}
       />
       <ListMyPets
         open={listPet.value}

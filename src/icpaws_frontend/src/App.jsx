@@ -54,7 +54,11 @@ function App() {
                 borderRadius: "10px",
               }}
             >
-              {isAuthenticated ? <LoggedIn /> : <LoggedOut />}
+              {isAuthenticated ? (
+                <LoggedIn updateList={handlePetCreated} />
+              ) : (
+                <LoggedOut />
+              )}
             </Card>
           </Grid>
         </Grid>
