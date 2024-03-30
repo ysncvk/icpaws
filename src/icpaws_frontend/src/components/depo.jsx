@@ -1,3 +1,6 @@
+import CreatePetForm from "./createPet";
+import PetList from "./components/pet-list";
+import Box from "@mui/material/Box";
 import { useState } from "react";
 import {
   createActor,
@@ -5,11 +8,14 @@ import {
 } from "declarations/icpaws_backend/index.js";
 import { AuthClient } from "@dfinity/auth-client";
 import { HttpAgent } from "@dfinity/agent";
-import Box from "@mui/material/Box";
 
-export default function Header() {
+
+function App() {
+  
   const [greet, setGreet] = useState("");
+  const [authenticated, setAuthenticated] = useState(false);
   let actor = icpaws_backend;
+  
   const handleGreet = async (e) => {
     e.preventDefault();
     try {
@@ -43,9 +49,9 @@ export default function Header() {
       console.error(error);
     }
   };
-
-  return (
-    <Box
+  return(
+    <main>
+      <Box
       gap={5}
       display="grid"
       gridTemplateColumns={{
@@ -70,5 +76,12 @@ export default function Header() {
       </div>
        
     </Box>
+      <Box sx={{ p: 1, paddingLeft: 10, paddingRight: 10 }}>
+        <PetList />
+      </Box>
+      <CreatePetForm />
+    </main>
   );
 }
+
+export default Depo;

@@ -1,16 +1,20 @@
-import * as Yup from 'yup';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from "yup";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import Box from '@mui/material/Box';
-import LoadingButton from '@mui/lab/LoadingButton';
-import FormProvider, { RHFTextField } from './components/hook-form';
+import Box from "@mui/material/Box";
+import LoadingButton from "@mui/lab/LoadingButton";
+import FormProvider, { RHFTextField } from "./components/hook-form";
 
-import {icpaws_backend} from "../../declarations/icpaws_backend";
+import { icpaws_backend } from "../../declarations/icpaws_backend";
+import { useAuth} from "./use-auth-client";
 
-export default function CreatePetForm() {
-  const [imageData, setImageData] = useState(''); // Dosya verisinin base64 formatındaki değerini saklamak için state kullanıyoruz
+
+export default function CreatePetForm({ onPetCreated }) {
+  const { isAuthenticated, principal } = useAuth();
+  const [imageData, setImageData] = useState(""); // Dosya verisinin base64 formatındaki değerini saklamak için state kullanıyoruz
+
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required(),
@@ -19,20 +23,20 @@ export default function CreatePetForm() {
   });
 
   const defaultValues = {
-    name: '',
-    species: '',
-    breed: '',
-    age: '',   
-    gender: '',
-    adoption: '',
-    place: '',
-    description: '',
+    name: "",
+    species: "",
+    breed: "",
+    age: "",
+    gender: "",
+    adoption: "",
+    place: "",
+    description: "",
   };
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   const {
@@ -44,10 +48,13 @@ export default function CreatePetForm() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       // Image state'inden gelen değeri form datasına ekle
-      const formData = { ...data, image: imageData };
-      const id= icpaws_backend.create(formData)
+      const formData = { ...data, image: imageData, owner: principal };
+      console.log(formData);
+      await icpaws_backend.createPet(formData);
+      console.log("New Pet Created" );
+      onPetCreated();
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   });
 
@@ -59,7 +66,7 @@ export default function CreatePetForm() {
     reader.onloadend = () => {
       const base64Data = reader.result; // Dosya verisini base64 formatına dönüştür
       setImageData(base64Data); // State'i güncelle
-      setValue('image', base64Data); // Formdaki 'image' alanının değerini güncelle
+      setValue("image", base64Data); // Formdaki 'image' alanının değerini güncelle
     };
 
     if (file) {
@@ -67,31 +74,36 @@ export default function CreatePetForm() {
     }
   };
 
+
+  
+
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Box
-        mt={2}
-        rowGap={3}
-        columnGap={2}
-        display="grid"
-        gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-        }}
-      >
-        <RHFTextField name="name" label="Pet Name" required />
-        <RHFTextField name="species" label="species" required />
-        <RHFTextField name="breed" label="breed" required />
-        <RHFTextField name="age" label="age" required />
-        <RHFTextField name="gender" label="gender" required />
-        <RHFTextField name="adoption" label="adoption" required />
-        <RHFTextField name="place" label="place" required />
-        <RHFTextField name="description" label="description" required />
-        <input type="file" onChange={handleFileChange} accept="image/*" /> {/* Image yükleme alanı */}
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          Ekle
-        </LoadingButton>
-      </Box>
-    </FormProvider>
+    isAuthenticated ? <FormProvider methods={methods} onSubmit={onSubmit}>
+    <Box
+      mt={2}
+      rowGap={3}
+      columnGap={2}
+      display="grid"
+      gridTemplateColumns={{
+        xs: "repeat(1, 1fr)",
+        sm: "repeat(2, 1fr)",
+      }}
+    >
+      <RHFTextField name="name" label="Pet Name" required />
+      <RHFTextField name="species" label="species" required />
+      <RHFTextField name="breed" label="breed" required />
+      <RHFTextField name="age" label="age" required />
+      <RHFTextField name="gender" label="gender" required />
+      <RHFTextField name="adoption" label="adoption" required />
+      <RHFTextField name="place" label="place" required />
+      <RHFTextField name="description" label="description" required />
+      <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
+      {/* Image yükleme alanı */}
+      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+        Ekle
+      </LoadingButton>
+    </Box>
+  </FormProvider> : <div>giriş yapın</div>
+  
   );
 }

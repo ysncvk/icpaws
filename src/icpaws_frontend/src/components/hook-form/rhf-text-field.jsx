@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types';
-import { Controller, useFormContext } from 'react-hook-form';
+import PropTypes from 'prop-types'
+import { Controller, useFormContext } from 'react-hook-form'
 
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
 
 // ----------------------------------------------------------------------
 
-export default function RHFTextField({ name, helperText, type, ...other }) {
-  const { control } = useFormContext();
+export default function RHFTextField ({ name, helperText, type, ...other }) {
+  const { control } = useFormContext()
 
   return (
     <Controller
@@ -20,9 +20,9 @@ export default function RHFTextField({ name, helperText, type, ...other }) {
           value={type === 'number' && field.value === 0 ? '' : field.value}
           onChange={(event) => {
             if (type === 'number') {
-              field.onChange(Number(event.target.value));
+              field.onChange(Number(event.target.value))
             } else {
-              field.onChange(event.target.value);
+              field.onChange(event.target.value)
             }
           }}
           error={!!error}
@@ -31,11 +31,11 @@ export default function RHFTextField({ name, helperText, type, ...other }) {
         />
       )}
     />
-  );
+  )
 }
 
 RHFTextField.propTypes = {
   helperText: PropTypes.object,
   name: PropTypes.string,
-  type: PropTypes.string,
-};
+  type: PropTypes.string
+}

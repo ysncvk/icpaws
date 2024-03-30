@@ -1,15 +1,11 @@
+import { Typography } from '@mui/material'
+import Card from '@mui/material/Card'
+import Stack from '@mui/material/Stack'
 
-import { Typography } from '@mui/material';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-
-import ListItemText from '@mui/material/ListItemText';
 
 // ----------------------------------------------------------------------
 
-export default function PetItem({ pet }) {
- 
-
+export default function PetItem ({ pet }) {
   const {
     id,
     name,
@@ -21,13 +17,12 @@ export default function PetItem({ pet }) {
     place,
     description,
     image,
+    owner,
   } = pet
-  
-
-
-
-  return (
    
+  console.log( "list itemdaki",pet)
+  return (
+
       <Card>
       <img src={image} alt="Selected image" style={{ maxWidth: '100%', maxHeight: '200px' }} />
 
@@ -48,12 +43,13 @@ export default function PetItem({ pet }) {
          <Typography variant='subtitle1' color='text.disabled'> Age of the pet:  </Typography>
          <Typography variant='subtitle1'> {age}  </Typography>
        </Stack>
+       <Stack direction="row" gap={3} alignItems="center">
+         <Typography variant='subtitle1' color='text.disabled'> Owner:  </Typography>
+         <Typography variant='subtitle1'> {owner.toString()}  </Typography>
+       </Stack>
 
       </Stack>
-     
-    
-      </Card>     
-  );
+
+      </Card>
+  )
 }
-
-
