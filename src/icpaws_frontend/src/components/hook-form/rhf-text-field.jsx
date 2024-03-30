@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+
 import { Controller, useFormContext } from 'react-hook-form'
 
 import TextField from '@mui/material/TextField'
@@ -17,7 +17,7 @@ export default function RHFTextField ({ name, helperText, type, ...other }) {
           {...field}
           fullWidth
           type={type}
-          value={type === 'number' && field.value === 0 ? '' : field.value}
+          value={field.value}
           onChange={(event) => {
             if (type === 'number') {
               field.onChange(Number(event.target.value))
@@ -34,8 +34,3 @@ export default function RHFTextField ({ name, helperText, type, ...other }) {
   )
 }
 
-RHFTextField.propTypes = {
-  helperText: PropTypes.object,
-  name: PropTypes.string,
-  type: PropTypes.string
-}

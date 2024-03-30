@@ -67,13 +67,16 @@ export const useAuthClient = (options = defaultOptions) => {
 
     setAuthClient(client);
 
-    const actor = createActor(canisterId, {
+    const actor = await createActor(canisterId, {
       agentOptions: {
         identity,
       },
     });
 
     setWhoamiActor(actor);
+
+    const result = await actor.signUpWithInternetIdentity();
+    console.log(result);
   }
 
   async function logout() {

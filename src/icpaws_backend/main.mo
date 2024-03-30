@@ -4,15 +4,14 @@ import Nat32 "mo:base/Nat32";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Result "mo:base/Result";
-import List "mo:base/List";
 
 
 
 actor ICPaws {
 
  
-  public query (message) func greet() : async Text {
-    return "Hoşgeldin, " # Principal.toText(message.caller) # "!";
+  public query (message) func greet() : async Principal {
+    message.caller
   };
   /**
    * Types for User
@@ -20,10 +19,7 @@ actor ICPaws {
 
   public type Result<T, E> = Result.Result<T, E>;
 
-  public type UserId= Principal;
-
   public type User = {
-  
     name: Text;
     avatar: Text;
   };
@@ -32,16 +28,16 @@ actor ICPaws {
    * Application State for User
    */
 
-  private stable var users : Trie.Trie<UserId, User> = Trie.empty();
+  private stable var users : Trie.Trie<Principal, User> = Trie.empty();
 
   /**
    * High-Level API for User
    */
 
-  // Register  a User
-  public  func  signUpWithInternetIdentity(caller:Principal) : async Bool {
+  // Register a User
+  public  shared (msg)func  signUpWithInternetIdentity() : async Bool {
 
-    let result=Trie.find(users, userKey(caller), Principal.equal);
+    let result=Trie.find(users, userKey(msg.caller), Principal.equal);
     let exists = Option.isSome(result);
     
     
@@ -52,13 +48,13 @@ actor ICPaws {
     
     // Create new User
     let newUser = { name = ""; avatar = "" };
-    users := Trie.replace(users, userKey(caller), Principal.equal, ?newUser).0;
+    users := Trie.replace(users, userKey(msg.caller), Principal.equal, ?newUser).0;
     
     return true; // New user created!
   };
 
   // Update a User 
-  public func updateUser (caller: Principal, user: User): async Bool {
+  public  func updateUser (user:User, caller: Principal): async Bool {
     let result = Trie.find(users, userKey(caller),Principal.equal);
     let exists = Option.isSome(result);
     if(exists) {
@@ -73,13 +69,13 @@ actor ICPaws {
   };
  
   // Delete a User
-  public func deleteUser(caller:Principal) : async Bool {
-     let result = Trie.find(users, userKey(caller),Principal.equal);
+  public shared (msg) func deleteUser() : async Bool {
+     let result = Trie.find(users, userKey(msg.caller),Principal.equal);
     let exists = Option.isSome(result);
     if(exists) {
       users := Trie.replace(
         users,
-        userKey(caller),
+        userKey(msg.caller),
         Principal.equal,
         null,
       ).0;
@@ -89,17 +85,17 @@ actor ICPaws {
   };
 
   // Get the current user based on the caller's principal
-  public query ({caller}) func getCurrentUser() : async ?User {
+  public query func getCurrentUser(caller:Principal) : async ?User {
     let result = Trie.find(users, userKey(caller), Principal.equal);
     return result;
   };
   
   // Get All Users
 
-  public query func listUsers() : async [(UserId, User)] {
-  return Trie.toArray<UserId, User, (UserId, User)>(
+  public query func listUsers() : async [(Principal, User)] {
+  return Trie.toArray<Principal, User, (Principal, User)>(
     users,
-    func (k, v) : (UserId, User) {
+    func (k, v) : (Principal, User) {
       (k, {userId = k; name = v.name; avatar = v.avatar})
     }
   );
@@ -125,7 +121,34 @@ actor ICPaws {
     place: Text;
     description: Text;
     image: Text;
-    ownerId: UserId;
+    owner: Principal;
+  };
+
+  // The type of a pet comes from frontend.
+  public type CreatePet = {
+    name: Text;
+    species : Text;
+    breed : Text;
+    age: Text;
+    gender: Text;
+    adoption: Text;
+    place: Text;
+    description: Text;
+    image: Text;
+  };
+
+  public type ResponsePet = {
+    name: Text;
+    species : Text;
+    breed : Text;
+    age: Text;
+    gender: Text;
+    adoption: Text;
+    place: Text;
+    description: Text;
+    image: Text;
+    id: Nat32;
+    owner: Principal;
   };
   
   /**
@@ -142,17 +165,12 @@ actor ICPaws {
    * High-Level API for Pets
    */
 
-  private func isUserLoggedIn(caller: Principal) : Bool {
-    return Option.isSome(Trie.find(users, userKey(caller), Principal.equal));
-  };
+
 
   // Create a pet.
-public  func createPet(pet: Pet, caller:Principal) : async Bool {
-    // Kullanıcı giriş yapmamışsa hata döndür
-    if (not isUserLoggedIn(caller)) {
-        return (false);
-    };
+public func createPet(pet: Pet) : async Bool {
     
+  
     // Pet için bir kimlik oluştur
     let petId = next;
     next += 1;
@@ -166,13 +184,8 @@ public  func createPet(pet: Pet, caller:Principal) : async Bool {
 };
 
 
-  public func getUserPets(caller: Principal) : async [Pet] {
-  let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(
-  pets,
-  func (key: PetId, pet: Pet) : Bool {
-    return Principal.equal(pet.ownerId, caller);
-  }
-);
+  public shared (msg) func getUserPets() : async [Pet] {
+  let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(pets, func (key: PetId, pet: Pet)  { pet.owner == msg.caller});
   // Convert the filtered trie to a list of Pet objects
   let petList: [Pet] = Trie.toArray<PetId, Pet, Pet>(filteredPets, func(key: PetId, pet: Pet) :Pet {
     return pet; // Return the pet object itself
@@ -218,11 +231,11 @@ public  func createPet(pet: Pet, caller:Principal) : async Bool {
 
 
     // List all pets 
-public query func list() : async [(PetId, Pet)] {
-  return Trie.toArray<PetId, Pet, (PetId, Pet)>(
+public query func list() : async [(ResponsePet)] {
+  return Trie.toArray<PetId, Pet, ResponsePet>(
     pets,
-    func (k, v) : (PetId, Pet) {
-      (k, {petId = k; name= v.name; species = v.species; breed = v.breed; age = v.age; gender = v.gender; adoption = v.adoption; place = v.place; description = v.description; image = v.image; ownerId= v.ownerId})
+    func (k, v) : (ResponsePet) {
+      {id = k; name= v.name; species = v.species; breed = v.breed; age = v.age; gender = v.gender; adoption = v.adoption; place = v.place; description = v.description; image = v.image; owner= v.owner}
     }
   );
 };
@@ -237,7 +250,7 @@ public query func list() : async [(PetId, Pet)] {
   };
   
    // Create a trie key from a useridentifier. (Parameter is a Principal Type)
-  private func userKey(x : UserId) : Trie.Key<UserId> {
+  private func userKey(x : Principal) : Trie.Key<Principal> {
     return { hash = Principal.hash x; key = x };
   };
   

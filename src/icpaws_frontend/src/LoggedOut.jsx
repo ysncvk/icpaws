@@ -2,7 +2,6 @@ import React from "react";
 import { useAuth } from "./use-auth-client";
 import ShadowButton from "./components/shadow-button.jsx";
 import Stack from "@mui/material/Stack";
-import { Image } from "@mui/icons-material";
 
 function LoggedOut() {
   const { login } = useAuth();
