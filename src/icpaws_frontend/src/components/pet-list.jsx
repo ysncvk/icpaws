@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import PetItem from "./pet-item";
 import { useEffect, useState } from "react";
 import { icpaws_backend } from "declarations/icpaws_backend/index.js";
+import { Typography } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function PetList({pets}) {
-
+export default function PetList({ pets }) {
   return (
     <>
       <Box
@@ -23,6 +23,12 @@ export default function PetList({pets}) {
           <PetItem key={pet.id} pet={pet} />
         ))}
       </Box>
+      {!pets.length && (
+        <Typography variant="h4" padding={10}>
+          "Right now, our platform is wagging its tail in anticipation for new
+          furry friends to find loving homes!"
+        </Typography>
+      )}
     </>
   );
 }

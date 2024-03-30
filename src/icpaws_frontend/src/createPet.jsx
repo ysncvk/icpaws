@@ -8,13 +8,11 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import FormProvider, { RHFTextField } from "./components/hook-form";
 
 import { icpaws_backend } from "../../declarations/icpaws_backend";
-import { useAuth} from "./use-auth-client";
-
+import { useAuth } from "./use-auth-client";
 
 export default function CreatePetForm({ onPetCreated }) {
-  const { isAuthenticated, principal } = useAuth();
+  const { principal } = useAuth();
   const [imageData, setImageData] = useState(""); // Dosya verisinin base64 formatındaki değerini saklamak için state kullanıyoruz
-
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required(),
@@ -51,7 +49,7 @@ export default function CreatePetForm({ onPetCreated }) {
       const formData = { ...data, image: imageData, owner: principal };
       console.log(formData);
       await icpaws_backend.createPet(formData);
-      console.log("New Pet Created" );
+      console.log("New Pet Created");
       onPetCreated();
     } catch (error) {
       console.log(error);
@@ -74,36 +72,32 @@ export default function CreatePetForm({ onPetCreated }) {
     }
   };
 
-
-  
-
   return (
-    isAuthenticated ? <FormProvider methods={methods} onSubmit={onSubmit}>
-    <Box
-      mt={2}
-      rowGap={3}
-      columnGap={2}
-      display="grid"
-      gridTemplateColumns={{
-        xs: "repeat(1, 1fr)",
-        sm: "repeat(2, 1fr)",
-      }}
-    >
-      <RHFTextField name="name" label="Pet Name" required />
-      <RHFTextField name="species" label="species" required />
-      <RHFTextField name="breed" label="breed" required />
-      <RHFTextField name="age" label="age" required />
-      <RHFTextField name="gender" label="gender" required />
-      <RHFTextField name="adoption" label="adoption" required />
-      <RHFTextField name="place" label="place" required />
-      <RHFTextField name="description" label="description" required />
-      <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
-      {/* Image yükleme alanı */}
-      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-        Ekle
-      </LoadingButton>
-    </Box>
-  </FormProvider> : <div>giriş yapın</div>
-  
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Box
+        mt={2}
+        rowGap={3}
+        columnGap={2}
+        display="grid"
+        gridTemplateColumns={{
+          xs: "repeat(1, 1fr)",
+          sm: "repeat(2, 1fr)",
+        }}
+      >
+        <RHFTextField name="name" label="Pet Name" required />
+        <RHFTextField name="species" label="species" required />
+        <RHFTextField name="breed" label="breed" required />
+        <RHFTextField name="age" label="age" required />
+        <RHFTextField name="gender" label="gender" required />
+        <RHFTextField name="adoption" label="adoption" required />
+        <RHFTextField name="place" label="place" required />
+        <RHFTextField name="description" label="description" required />
+        <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
+        {/* Image yükleme alanı */}
+        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          Ekle
+        </LoadingButton>
+      </Box>
+    </FormProvider>
   );
 }

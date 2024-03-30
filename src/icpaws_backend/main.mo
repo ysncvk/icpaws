@@ -8,8 +8,6 @@ import Result "mo:base/Result";
 
 
 actor ICPaws {
-
- 
   public query (message) func greet() : async Principal {
     message.caller
   };
@@ -115,37 +113,16 @@ actor ICPaws {
     name: Text;
     species : Text;
     breed : Text;
-    age: Text;
     gender: Text;
-    adoption: Text;
-    place: Text;
-    description: Text;
     image: Text;
     owner: Principal;
-  };
-
-  // The type of a pet comes from frontend.
-  public type CreatePet = {
-    name: Text;
-    species : Text;
-    breed : Text;
-    age: Text;
-    gender: Text;
-    adoption: Text;
-    place: Text;
-    description: Text;
-    image: Text;
   };
 
   public type ResponsePet = {
     name: Text;
     species : Text;
     breed : Text;
-    age: Text;
     gender: Text;
-    adoption: Text;
-    place: Text;
-    description: Text;
     image: Text;
     id: Nat32;
     owner: Principal;
@@ -184,8 +161,8 @@ public func createPet(pet: Pet) : async Bool {
 };
 
 
-  public shared (msg) func getUserPets() : async [Pet] {
-  let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(pets, func (key: PetId, pet: Pet)  { pet.owner == msg.caller});
+  public func getUserPets(caller:Principal) : async [Pet] {
+  let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(pets, func (key: PetId, pet: Pet)  { pet.owner == caller});
   // Convert the filtered trie to a list of Pet objects
   let petList: [Pet] = Trie.toArray<PetId, Pet, Pet>(filteredPets, func(key: PetId, pet: Pet) :Pet {
     return pet; // Return the pet object itself
@@ -235,7 +212,7 @@ public query func list() : async [(ResponsePet)] {
   return Trie.toArray<PetId, Pet, ResponsePet>(
     pets,
     func (k, v) : (ResponsePet) {
-      {id = k; name= v.name; species = v.species; breed = v.breed; age = v.age; gender = v.gender; adoption = v.adoption; place = v.place; description = v.description; image = v.image; owner= v.owner}
+      {id = k; name= v.name; species = v.species; breed = v.breed; gender = v.gender; image = v.image; owner= v.owner}
     }
   );
 };

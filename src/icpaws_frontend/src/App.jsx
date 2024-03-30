@@ -62,7 +62,6 @@ function App() {
       <Box sx={{ p: 1, paddingLeft: 10, paddingRight: 10 }}>
         <PetList pets={pets} />
       </Box>
-      <CreatePetForm onPetCreated={handlePetCreated} />
     </main>
   );
 }

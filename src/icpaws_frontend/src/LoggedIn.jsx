@@ -4,9 +4,16 @@ import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useBoolean } from "./components/hooks/use-boolean.js";
 import UserQuickEditForm from "./components/user-quick-edit-form.jsx";
+import Button from "@mui/material/Button";
+import AddPetForm from "./components/add-pet-form.jsx";
+import ListMyPets from "./components/list-my-pets.jsx";
 
-function LoggedIn() {
+function LoggedIn({ updateList }) {
   const [result, setResult] = React.useState("");
+
+  const defaultUser = "Paws Friend";
+
+  const defaultAvatar = "./defaultAvatar.png";
 
   const [currentUser, setCurrentUser] = React.useState();
 
@@ -16,13 +23,17 @@ function LoggedIn() {
 
   const quickEdit = useBoolean();
 
-  const  getUser = async () => {
-    const user = await whoamiActor.getCurrentUser(principal);
-    console.log("user returned backend", user)
-    setCurrentUser(user[0]);
-  }
+  const addPet = useBoolean();
 
-  useEffect(() => { 
+  const listPet = useBoolean();
+
+  const getUser = async () => {
+    const user = await whoamiActor.getCurrentUser(principal);
+    console.log("user returned backend", user);
+    setCurrentUser(user[0]);
+  };
+
+  useEffect(() => {
     getUser();
     async function greetuser() {
       const whoami = await whoamiActor.greet();
@@ -30,25 +41,76 @@ function LoggedIn() {
     }
     greetuser();
   }, []);
- 
+
   const handleUpdateUser = () => {
     getUser(); // Re-fetch pets after a new pet is created
 
     console.error("Error fetching pets after creation:");
   };
 
-
   return (
     <>
-      <Stack direction="column" p={3}>
-        <Typography variant="caption">Hi {result} !</Typography>
-        <Typography variant="caption">Hi {currentUser?.name} !</Typography>
-        <button id="logout" onClick={logout}>
-          log out
-        </button>
-        <button id="logout" onClick={quickEdit.onTrue}>
-          Update Profile
-        </button>
+      <Stack
+        direction="column"
+        p={2}
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Typography variant="caption">{result}</Typography>
+
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <Stack
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            gap={1}
+          >
+            <img
+              src={currentUser?.avatar ? currentUser?.avatar : defaultAvatar}
+              alt="internet"
+              height={100}
+              width={100}
+              style={{ borderRadius: "50px" }}
+            />
+            <Typography>
+              Hi {currentUser?.name ? currentUser?.name : defaultUser} !
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" gap={2}>
+            <Stack
+              direction="column"
+              alignItems="left"
+              justifyContent="center"
+              gap={2}
+            >
+              <Button variant="outlined" onClick={logout}>
+                My Pets
+              </Button>
+              <Button variant="outlined" onClick={addPet.onTrue}>
+                Add Pet
+              </Button>
+            </Stack>
+            <Stack
+              direction="column"
+              alignItems="right"
+              justifyContent="center"
+              gap={2}
+            >
+              <Button variant="outlined" onClick={quickEdit.onTrue}>
+                Update Profile
+              </Button>
+              <Button variant="outlined" onClick={logout}>
+                Log Out
+              </Button>
+            </Stack>
+          </Stack>
+        </Stack>
       </Stack>
       <UserQuickEditForm
         currentUser={currentUser}
@@ -56,6 +118,16 @@ function LoggedIn() {
         open={quickEdit.value}
         principal={principal}
         mutatuePanel={handleUpdateUser}
+      />
+      <AddPetForm
+        open={addPet.value}
+        onClose={addPet.onFalse}
+        principal={principal}
+      />
+      <ListMyPets
+        open={listPet.value}
+        onClose={listPet.onFalse}
+        principal={principal}
       />
     </>
   );
