@@ -4,7 +4,7 @@
 
 ## Description
 
-ICPPaws is a fullstack pet adoption application developed on the Internet Computer Protocol (ICP). It was created as the final project for the ICP Internship Bootcamp in collaboration with Rise In. The backend is implemented using Motoko, while React is utilized for the frontend. Material-UI (Mui) is employed for frontend design. Users can log in to the system using Internet Identity and manage their profiles. They can also create listings for pets available for adoption, view their previous listings, and perform editing or deletion operations on their listings.
+ICPPaws is a fullstack pet adoption application developed on the Internet Computer Protocol (ICP). It was created as the final project for the ICP Internship Bootcamp in collaboration with [Rise In] (https://www.risein.com/). The backend is implemented using Motoko, while React is utilized for the frontend. Material-UI (Mui) is employed for frontend design. Users can log in to the system using Internet Identity and manage their profiles. They can also create listings for pets available for adoption, view their previous listings, and perform editing or deletion operations on their listings.
 
 ## A Brief Overview of the Internet Computer Protocol
 
