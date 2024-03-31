@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -26,7 +26,9 @@ export default function UserQuickEditForm({
   const [imageData, setImageData] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log('formun içindeki vurrent yser:',currentUser)
+  const defaultAvatar = "./defaultAvatar.png";
+
+  console.log("formun içindeki vurrent yser:", currentUser);
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string(),
@@ -35,10 +37,10 @@ export default function UserQuickEditForm({
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      avatar: currentUser?.avatar || '',
+      name: currentUser?.name || "",
+      avatar: currentUser?.avatar || "",
     }),
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm({
@@ -80,6 +82,13 @@ export default function UserQuickEditForm({
     }
   });
 
+  useEffect(() => {
+    if (currentUser) {
+      setValue("name", currentUser?.name || "");
+      setValue("avatar", currentUser?.avatar || "");
+    }
+  }, [currentUser]);
+
   return (
     <Dialog
       fullWidth
@@ -104,12 +113,15 @@ export default function UserQuickEditForm({
               sm: "repeat(1, 1fr)",
             }}
           >
-            <RHFTextField name="name" label="User Name"  />
-            <input
-              type="file"
-              onChange={handleFileChange}
-              accept="image/*"
-            />{" "}
+            <RHFTextField name="name" label="User Name" />
+            <img
+              src={currentUser?.avatar ? currentUser?.avatar : defaultAvatar}
+              alt="internet"
+              height={100}
+              width={100}
+              style={{ borderRadius: "50px" }}
+            />
+            <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
           </Box>
         </DialogContent>
 

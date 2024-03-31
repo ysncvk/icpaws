@@ -1,5 +1,9 @@
 # ICPPaws: A Fullstack Pet Adoption Application on ICP
 
+<p>
+  <img src="/screen-shot.png" width="600" title="ICPaws">
+</p>
+
 
 ## Description
 
