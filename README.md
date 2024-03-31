@@ -90,7 +90,22 @@ npm start
 
 Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
 
-# Note on Internet Identity
+## Installing MUI for your project
+
+For implementing frontend in React, using Material UI is a simple and effective way. You can install MUI via 
+npm using command below. 
+ 
+ ```bash
+ npm install @mui/material @emotion/react @emotion/styled
+
+```  
+
+# Integrate Internet Identity in your project
+
+You can integrate your project follwing instructions on Internet Identity web page.
+
+Ckeckout this [link](https://internetcomputer.org/docs/current/developer-docs/web-apps/user-login/internet-identity/integrate-internet-identity) for detailed info.
+
 
 While testing your app in local enviorenment, Internet identity provider will be your  backend canister. You have to update
 in your frontend code backened canister id. You can find your backend canister id your .env file.
