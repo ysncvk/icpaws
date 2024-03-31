@@ -13,7 +13,15 @@ ICP (Internet Computer Protocol) is the core protocol of the Internet Computer, 
 You can learn more on [ICP](https://internetcomputer.org/)
 
 ## Feature Overview: Interactive Dashboard with Pet Record Management
-
+<iframe
+  width="640"
+  height="480"
+  src="https://www.youtube.com/embed/UmX4kyB2wfg"
+  frameborder="0"
+  allow="autoplay; encrypted-media"
+  allowfullscreen
+>
+</iframe>
 When the user logs into the application with their internet identity, their information is automatically saved to the database. After logging in, a mini dashboard greets the user with a default name "Hi Paws Friend" and a default sweet profile avatar. in the top right corner of the screen.
 
 ![dashboard](/src/icpaws_frontend/public/dashboard.png)
