@@ -14,6 +14,8 @@ You can learn more on [ICP](https://internetcomputer.org/)
 
 ## Feature Overview: Interactive Dashboard with Pet Record Management
 
+{% include youtube.html id="1UhCUEA7KfM" %}
+
 When the user logs into the application with their internet identity, their information is automatically saved to the database. After logging in, a mini dashboard greets the user with a default name "Hi Paws Friend" and a default sweet profile avatar. in the top right corner of the screen.
 
 ![dashboard](/src/icpaws_frontend/public/dashboard.png)
