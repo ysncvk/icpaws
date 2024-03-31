@@ -60,7 +60,7 @@ export default function MyPetItem({ pet }) {
             <Typography variant="subtitle1"> {gender} </Typography>
           </Stack>
         </Stack>
-        <Stack direction="row" gap={3} p={5}>
+        <Stack direction="row" gap={3} p={3}>
           {" "}
           <Button variant="outlined" onClick={onDeleteRow}>
             delete

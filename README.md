@@ -6,8 +6,21 @@
 
 ICPPaws is a fullstack pet adoption application developed on the Internet Computer Protocol (ICP). It was created as the final project for the ICP Internship Bootcamp in collaboration with Rise In. The backend is implemented using Motoko, while React is utilized for the frontend. Material-UI (Mui) is employed for frontend design. Users can log in to the system using Internet Identity and manage their profiles. They can also create listings for pets available for adoption, view their previous listings, and perform editing or deletion operations on their listings.
 
+## A Brief Overview of the Internet Computer Protocol
 
-## Instalaltion
+ICP (Internet Computer Protocol) is the core protocol of the Internet Computer, a blockchain network. This protocol is used for developing decentralized applications and operates securely and efficiently on a decentralized network. ICP encompasses a set of protocols and algorithms used to manage smart contracts and decentralized databases. Users on the network can store, process, and share data through ICP. As a result, the Internet Computer provides a more scalable, secure, and open internet experience beyond traditional web services.
+
+You can learn more on [ICP](https://internetcomputer.org/)
+
+## Feature Overview: Interactive Dashboard with Pet Record Management
+
+When the user logs into the application with their internet identity, their information is automatically saved to the database. After logging in, a mini dashboard greets the user with a default name "Hi Paws Friend" and a default sweet profile avatar. in the top right corner of the screen.
+
+![dashboard](/src/icpaws_frontend/public/dashboard.png)
+
+After logging into the system, you can update your profile information and avatar by clicking on the 'Update Profile' button on the dashboard. Alternatively, you can permanently delete your account from the system.
+
+## Installation 
 
 To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
 
@@ -58,7 +71,7 @@ npm start
 
 Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
 
-### Note on frontend environment variables
+### Note on Internnet Identity
 
 If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
 

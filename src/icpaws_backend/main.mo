@@ -67,13 +67,13 @@ actor ICPaws {
   };
  
   // Delete a User
-  public shared (msg) func deleteUser() : async Bool {
-     let result = Trie.find(users, userKey(msg.caller),Principal.equal);
+  public shared func deleteUser(caller:Principal) : async Bool {
+     let result = Trie.find(users, userKey(caller),Principal.equal);
     let exists = Option.isSome(result);
     if(exists) {
       users := Trie.replace(
         users,
-        userKey(msg.caller),
+        userKey(caller),
         Principal.equal,
         null,
       ).0;

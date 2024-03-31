@@ -12,7 +12,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import FormProvider, { RHFTextField } from "./hook-form";
 import { icpaws_backend } from "../../../declarations/icpaws_backend";
-import { useSnackbar } from "notistack";
+import { useSnackbar } from "./snackbar/index.js";
+import { ConfirmDialog } from "./custom-dialog/index.js";
+import { Divider } from "@mui/material";
+import { useBoolean } from "./hooks/use-boolean.js";
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +28,8 @@ export default function UserQuickEditForm({
 }) {
   const [imageData, setImageData] = useState("");
   const { enqueueSnackbar } = useSnackbar();
+
+  const confirm = useBoolean();
 
   const defaultAvatar = "./defaultAvatar.png";
 
@@ -82,6 +87,11 @@ export default function UserQuickEditForm({
     }
   });
 
+  const onDeleteRow = async () => {
+    const response = await icpaws_backend.deleteUser(principal);
+    console.log(response);
+  };
+
   useEffect(() => {
     if (currentUser) {
       setValue("name", currentUser?.name || "");
@@ -108,6 +118,7 @@ export default function UserQuickEditForm({
             columnGap={2}
             display="grid"
             pt={3}
+            pb={3}
             gridTemplateColumns={{
               xs: "repeat(1, 1fr)",
               sm: "repeat(1, 1fr)",
@@ -123,8 +134,11 @@ export default function UserQuickEditForm({
             />
             <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
           </Box>
+          <Button variant="outlined" color="error" onClick={confirm.onTrue}>
+            Delete my Account
+          </Button>
         </DialogContent>
-
+        <Divider />
         <DialogActions>
           <Button variant="outlined" onClick={onClose}>
             Cancel
@@ -139,6 +153,17 @@ export default function UserQuickEditForm({
           </LoadingButton>
         </DialogActions>
       </FormProvider>
+      <ConfirmDialog
+        open={confirm.value}
+        onClose={confirm.onFalse}
+        title="Delete"
+        content="Are you sure want to leave us :(?"
+        action={
+          <Button variant="contained" color="error" onClick={onDeleteRow}>
+            Delete
+          </Button>
+        }
+      />
     </Dialog>
   );
 }
