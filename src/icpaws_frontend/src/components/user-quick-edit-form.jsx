@@ -16,6 +16,7 @@ import { useSnackbar } from "./snackbar/index.js";
 import { ConfirmDialog } from "./custom-dialog/index.js";
 import { Divider } from "@mui/material";
 import { useBoolean } from "./hooks/use-boolean.js";
+import { useAuth } from "../use-auth-client.jsx";
 
 // ----------------------------------------------------------------------
 
@@ -26,10 +27,9 @@ export default function UserQuickEditForm({
   principal,
   mutatuePanel,
 }) {
+  const { logout } = useAuth();
   const defaultAvatar = "./defaultAvatar.png";
-  const [imageData, setImageData] = useState(
-    currentUser?.avatar ? currentUser?.avatar : defaultAvatar,
-  );
+  const [imageData, setImageData] = useState(currentUser?.avatar);
   const { enqueueSnackbar } = useSnackbar();
 
   const confirm = useBoolean();
@@ -88,11 +88,15 @@ export default function UserQuickEditForm({
 
   const onDeleteRow = async () => {
     const response = await icpaws_backend.deleteUser(principal);
+    enqueueSnackbar("Your all info deleted. See you soon!");
+    confirm.onFalse();
     console.log(response);
+    logout();
   };
 
   useEffect(() => {
     if (currentUser) {
+      setImageData(currentUser?.avatar);
       setValue("name", currentUser?.name || "");
       setValue("avatar", currentUser?.avatar || "");
     }
@@ -125,7 +129,7 @@ export default function UserQuickEditForm({
           >
             <RHFTextField name="name" label="User Name" />
             <img
-              src={imageData}
+              src={imageData ? imageData : defaultAvatar}
               alt="internet"
               height={100}
               width={100}
