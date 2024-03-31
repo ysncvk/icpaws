@@ -12,39 +12,40 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import FormProvider, { RHFTextField } from "./hook-form";
 import { icpaws_backend } from "../../../declarations/icpaws_backend";
-import { useSnackbar } from "./snackbar/index.js";
-import { ConfirmDialog } from "./custom-dialog/index.js";
-import { Divider } from "@mui/material";
-import { useBoolean } from "./hooks/use-boolean.js";
+import { useSnackbar } from "notistack";
+import Stack from "@mui/material/Stack";
 
 // ----------------------------------------------------------------------
 
-export default function UserQuickEditForm({
-  currentUser,
+export default function EditPetForm({
   open,
   onClose,
-  principal,
-  mutatuePanel,
+  id,
+  mutatePets,
+  mutateHomePets,
+  currentPet,
+  principle,
 }) {
-  const defaultAvatar = "./defaultAvatar.png";
-  const [imageData, setImageData] = useState(
-    currentUser?.avatar ? currentUser?.avatar : defaultAvatar,
-  );
+  const [imageData, setImageData] = useState(currentPet.image);
   const { enqueueSnackbar } = useSnackbar();
 
-  const confirm = useBoolean();
-
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string(),
-    avatar: Yup.string(),
+    name: Yup.string().required(),
+    species: Yup.string().required(),
+    breed: Yup.string().required(),
+    gender: Yup.string().required(),
+    image: Yup.string().required(), // Image alanı zorunlu
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || "",
-      avatar: currentUser?.avatar || "",
+      name: "",
+      image: "",
+      species: "",
+      breed: "",
+      gender: "",
     }),
-    [currentUser],
+    [],
   );
 
   const methods = useForm({
@@ -53,6 +54,7 @@ export default function UserQuickEditForm({
   });
 
   const {
+    reset,
     setValue,
     handleSubmit,
     formState: { isSubmitting },
@@ -65,7 +67,7 @@ export default function UserQuickEditForm({
     reader.onloadend = () => {
       const base64Data = reader.result; // Dosya verisini base64 formatına dönüştür
       setImageData(base64Data); // State'i güncelle
-      setValue("avatar", base64Data); // Formdaki 'image' alanının değerini güncelle
+      setValue("image", base64Data); // Formdaki 'image' alanının değerini güncelle
     };
 
     if (file) {
@@ -75,28 +77,29 @@ export default function UserQuickEditForm({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const formData = { ...data, image: imageData };
-      await icpaws_backend.updateUser(formData, principal);
-      mutatuePanel();
-      enqueueSnackbar("Your ICPaws Profile Update success!");
+      const formData = { ...data, image: imageData, owner: principle };
+      await icpaws_backend.update(id, formData);
+      mutatePets();
+      mutateHomePets();
+      enqueueSnackbar("Your Pet is updated successfully!");
       onClose();
       console.info("DATA", data);
+      reset();
     } catch (error) {
       console.error(error);
+      enqueueSnackbar("System Error: Please Come Back Later!");
     }
   });
 
-  const onDeleteRow = async () => {
-    const response = await icpaws_backend.deleteUser(principal);
-    console.log(response);
-  };
-
   useEffect(() => {
-    if (currentUser) {
-      setValue("name", currentUser?.name || "");
-      setValue("avatar", currentUser?.avatar || "");
+    if (currentPet) {
+      setValue("name", currentPet?.name || "");
+      setValue("species", currentPet?.species || "");
+      setValue("breed", currentPet?.breed || "");
+      setValue("gender", currentPet?.gender || "");
+      setValue("image", currentPet?.image || "");
     }
-  }, [currentUser]);
+  }, [currentPet]);
 
   return (
     <Dialog
@@ -105,39 +108,49 @@ export default function UserQuickEditForm({
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: { maxWidth: 350 },
+        sx: { maxWidth: 750 },
       }}
     >
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <DialogTitle>Update Profile</DialogTitle>
+        <DialogTitle>Update Your Pet Info</DialogTitle>
 
         <DialogContent>
           <Box
             rowGap={3}
             columnGap={2}
             display="grid"
-            pt={3}
+            pt={1}
             pb={3}
             gridTemplateColumns={{
               xs: "repeat(1, 1fr)",
-              sm: "repeat(1, 1fr)",
+              sm: "repeat(2, 1fr)",
             }}
           >
-            <RHFTextField name="name" label="User Name" />
-            <img
-              src={imageData}
-              alt="internet"
-              height={100}
-              width={100}
-              style={{ borderRadius: "50px" }}
-            />
-            <input type="file" onChange={handleFileChange} accept="image/*" />{" "}
+            <RHFTextField name="name" label="Pet Name" required />
+            <RHFTextField name="species" label="species" required />
+            <RHFTextField name="breed" label="breed" required />
+            <RHFTextField name="gender" label="gender" required />
           </Box>
-          <Button variant="outlined" color="error" onClick={confirm.onTrue}>
-            Delete my Account
-          </Button>
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+          >
+            <label htmlFor="file-upload" className="custom-file-upload">
+              {imageData ? "Change Image" : "Upload Image"}
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+              style={{ display: "none" }}
+            />{" "}
+            <img src={imageData} alt="your pet" height={200} width={400} />
+          </Stack>
         </DialogContent>
-        <Divider />
+
         <DialogActions>
           <Button variant="outlined" onClick={onClose}>
             Cancel
@@ -148,21 +161,10 @@ export default function UserQuickEditForm({
             variant="contained"
             loading={isSubmitting}
           >
-            Update
+            Update Pet
           </LoadingButton>
         </DialogActions>
       </FormProvider>
-      <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to leave us :(?"
-        action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
-            Delete
-          </Button>
-        }
-      />
     </Dialog>
   );
 }

@@ -160,7 +160,7 @@ public func createPet(pet: Pet) : async Bool {
     return true;
 };
 
-
+ // get current user pets
   public func getUserPets(caller:Principal) : async [(ResponsePet)] {
   let filteredPets: Trie.Trie<PetId, Pet> = Trie.filter<PetId, Pet>(pets, func (key: PetId, pet: Pet)  { pet.owner == caller});
   // Convert the filtered trie to a list of Pet objects

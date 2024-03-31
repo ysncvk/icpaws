@@ -10,6 +10,7 @@ import LoggedOut from "./LoggedOut";
 import { icpaws_backend } from "../../declarations/icpaws_backend";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
+import { SnackbarProvider } from "./components/snackbar";
 
 function App() {
   const { isAuthenticated, principal } = useAuth();
@@ -72,6 +73,8 @@ function App() {
 
 export default () => (
   <AuthProvider>
-    <App />
+    <SnackbarProvider>
+      <App />
+    </SnackbarProvider>
   </AuthProvider>
 );

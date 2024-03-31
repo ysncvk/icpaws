@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import Dialog from "@mui/material/Dialog";
 import LoadingButton from "@mui/lab/LoadingButton";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -45,6 +46,7 @@ export default function AddPetForm({ open, onClose, principal, mutatePets }) {
   });
 
   const {
+    reset,
     setValue,
     handleSubmit,
     formState: { isSubmitting },
@@ -70,8 +72,11 @@ export default function AddPetForm({ open, onClose, principal, mutatePets }) {
       const formData = { ...data, image: imageData, owner: principal };
       await icpaws_backend.createPet(formData);
       mutatePets();
+      enqueueSnackbar("Your Pet is added to our database successufully!");
       onClose();
       console.info("DATA", data);
+      reset();
+      setImageData("");
     } catch (error) {
       console.error(error);
     }
@@ -95,7 +100,8 @@ export default function AddPetForm({ open, onClose, principal, mutatePets }) {
             rowGap={3}
             columnGap={2}
             display="grid"
-            pt={3}
+            pt={1}
+            pb={3}
             gridTemplateColumns={{
               xs: "repeat(1, 1fr)",
               sm: "repeat(2, 1fr)",
@@ -105,12 +111,27 @@ export default function AddPetForm({ open, onClose, principal, mutatePets }) {
             <RHFTextField name="species" label="species" required />
             <RHFTextField name="breed" label="breed" required />
             <RHFTextField name="gender" label="gender" required />
+          </Box>
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+          >
+            <label htmlFor="file-upload" className="custom-file-upload">
+              {imageData ? "Change Image" : "Upload Image"}
+            </label>
             <input
+              id="file-upload"
               type="file"
               onChange={handleFileChange}
               accept="image/*"
+              style={{ display: "none" }}
             />{" "}
-          </Box>
+            {imageData && (
+              <img src={imageData} alt="your pet" height={200} width={400} />
+            )}
+          </Stack>
         </DialogContent>
 
         <DialogActions>

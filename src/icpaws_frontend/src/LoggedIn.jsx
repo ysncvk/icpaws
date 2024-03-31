@@ -44,8 +44,6 @@ function LoggedIn({ updateList }) {
 
   const handleUpdateUser = () => {
     getUser(); // Re-fetch pets after a new pet is created
-
-    console.error("Error fetching pets after creation:");
   };
 
   return (
@@ -129,6 +127,7 @@ function LoggedIn({ updateList }) {
         open={listPet.value}
         onClose={listPet.onFalse}
         principal={principal}
+        mutateHomePets={updateList}
       />
     </>
   );

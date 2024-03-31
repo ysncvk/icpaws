@@ -11,7 +11,12 @@ import MyPetItem from "./my-pet-item.jsx";
 
 // ----------------------------------------------------------------------
 
-export default function ListMyPets({ open, onClose, principal }) {
+export default function ListMyPets({
+  open,
+  onClose,
+  principal,
+  mutateHomePets,
+}) {
   const [mypets, setMyPets] = useState([]);
 
   useEffect(() => {
@@ -50,7 +55,13 @@ export default function ListMyPets({ open, onClose, principal }) {
             }}
           >
             {mypets.map((pet) => (
-              <MyPetItem key={pet.id} pet={pet} />
+              <MyPetItem
+                key={pet.id}
+                pet={pet}
+                listUpdate={fetchPets}
+                principal={principal}
+                mutateHomepets={mutateHomePets}
+              />
             ))}
           </Box>
           {!mypets.length && (
@@ -61,8 +72,8 @@ export default function ListMyPets({ open, onClose, principal }) {
         </>
       </DialogContent>
 
-      <DialogActions>
-        <Button variant="outlined" onClick={onClose}>
+      <DialogActions sx={{ pr: 3, pb: 3 }}>
+        <Button variant="contained" onClick={onClose}>
           Ok I've seen my sweeties :)
         </Button>
       </DialogActions>

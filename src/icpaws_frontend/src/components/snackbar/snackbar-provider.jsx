@@ -21,7 +21,7 @@ export default function SnackbarProvider({ children }) {
       maxSnack={5}
       preventDuplicate
       autoHideDuration={3000}
-      TransitionComponent={isRTL ? Collapse : undefined}
+      TransitionComponent={undefined}
       variant="success" // Set default variant
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       iconVariant={{
